@@ -1,0 +1,40 @@
+# Data directories
+data/raw/
+data/spectrograms-*/
+*.npy
+
+# Keep models directory structure but ignore large files
+data/models/*.pt
+
+# Logs
+logs/*.log
+logs/*.png
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
