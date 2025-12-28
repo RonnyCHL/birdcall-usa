@@ -117,7 +117,7 @@ def download_audio(species_name, scientific_name, dirname):
 
 
 def generate_spectrograms(species_name, dirname):
-    """Generate spectrograms from audio files."""
+    """Generate spectrograms from audio files using process_directory."""
     logger.info(f"Generating spectrograms for {species_name}")
 
     audio_dir = RAW_DIR / f'xeno-canto-{dirname}'
@@ -132,39 +132,25 @@ def generate_spectrograms(species_name, dirname):
         n_mels=128,
         hop_length=512,
         n_fft=2048,
-        output_size=(128, 128)
+        fmin=500,
+        fmax=8000
     )
 
-    total_generated = 0
-
-    for voc_type in ['song', 'call', 'alarm']:
-        type_dir = audio_dir / voc_type
-        output_type_dir = spec_dir / voc_type
-        output_type_dir.mkdir(parents=True, exist_ok=True)
-
-        if not type_dir.exists():
-            logger.warning(f"No {voc_type} directory for {species_name}")
-            continue
-
-        audio_files = list(type_dir.glob('*.mp3'))
-        logger.info(f"  {voc_type}: {len(audio_files)} audio files")
-
-        for audio_file in audio_files:
-            try:
-                output_path = output_type_dir / f"{audio_file.stem}.npy"
-                if output_path.exists():
-                    total_generated += 1
-                    continue
-
-                spec = generator.generate(str(audio_file))
-                if spec is not None:
-                    np.save(output_path, spec)
-                    total_generated += 1
-            except Exception as e:
-                logger.debug(f"Failed to process {audio_file}: {e}")
-
-    logger.info(f"Generated {total_generated} spectrograms for {species_name}")
-    return total_generated >= 50
+    # Use process_directory which handles everything
+    try:
+        stats = generator.process_directory(
+            audio_dir=str(audio_dir),
+            output_dir=str(spec_dir),
+            segment_duration=3.0,
+            overlap=0.5,
+            save_png=False
+        )
+        total_generated = stats.get('total', 0)
+        logger.info(f"Generated {total_generated} spectrograms for {species_name}")
+        return total_generated >= 50
+    except Exception as e:
+        logger.error(f"Failed to generate spectrograms: {e}")
+        return False
 
 
 def combine_spectrograms(spec_dir, max_per_class=MAX_SPECTROGRAMS_PER_CLASS):
