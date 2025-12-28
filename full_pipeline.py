@@ -36,18 +36,7 @@ from src.classifiers.cnn_classifier_pytorch import CNNVocalizationClassifier, pl
 # Import species list
 from us_bird_species import US_BIRD_SPECIES, get_species_by_priority, get_all_species_for_training
 
-# Logging setup
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('logs/full_pipeline.log')
-    ]
-)
-logger = logging.getLogger(__name__)
-
-# Directories
+# Directories - create BEFORE logging setup
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / 'data'
 RAW_DIR = DATA_DIR / 'raw'
@@ -57,6 +46,17 @@ LOGS_DIR = BASE_DIR / 'logs'
 # Ensure directories exist
 for d in [DATA_DIR, RAW_DIR, MODELS_DIR, LOGS_DIR]:
     d.mkdir(parents=True, exist_ok=True)
+
+# Logging setup (after directories exist)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(LOGS_DIR / 'full_pipeline.log')
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Training parameters
 SAMPLES_PER_TYPE = 150  # Audio samples per vocalization type
