@@ -2,6 +2,12 @@
 
 CNN vocalization classifier for North American birds - classifies songs, calls & alarms using spectrograms.
 
+## Download Pre-trained Models
+
+**[Download v1.0 Models (70 MB)](https://github.com/RonnyCHL/birdcall-usa/releases/download/v1.0/birdcall-usa-models-v1.0.zip)** - 46 species, trained December 2024
+
+Extract to `trained-models/` folder.
+
 ## Overview
 
 This project trains deep learning models to classify bird vocalizations into three categories:
